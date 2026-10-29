@@ -1,0 +1,35 @@
+#include <pic18f4550.h>
+
+void delay(void);
+
+void main(void)
+{
+    TRISB = 0x00;      // Configure PORTB as output
+    LATB = 0xFF;       // Initially turn ON all PORTB pins
+
+    while(1)
+    {
+        LATB = ~LATB;  // Toggle PORTB
+        delay();       // Generate delay
+    }
+}
+
+void delay(void)
+{
+    T0CON = 0x07;      // Enable Timer0, 16-bit mode, 1:256 prescaler
+
+    TMR0H = 0xB3;      // Load high byte
+    TMR0L = 0xB5;      // Load low byte
+
+    INTCONbits.TMR0IF = 0;   // Clear Timer0 overflow flag
+
+    T0CONbits.TMR0ON = 1;    // Start Timer0
+
+    while(INTCONbits.TMR0IF == 0)
+    {
+        // Wait for Timer0 overflow
+    }
+
+    T0CONbits.TMR0ON = 0;    // Stop Timer0
+    INTCONbits.TMR0IF = 0;   // Clear overflow flag
+}

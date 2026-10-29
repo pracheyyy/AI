@@ -1,0 +1,35 @@
+#include <p18f4550.h>
+
+#pragma config FOSC = HS
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
+
+#define _XTAL_FREQ 20000000UL
+
+void main(void)
+{
+    TRISC = 0x00;
+    LATC = 0x00;
+
+    while(1)
+    {
+        // Motor rotates in forward direction
+        LATCbits.LATC1 = 1;
+        LATCbits.LATC2 = 0;
+
+        for(unsigned int i = 0; i < 500; i++)
+        {
+            for(unsigned int j = 0; j < 200; j++);
+        }
+
+        // Motor rotates in reverse direction
+        LATCbits.LATC1 = 0;
+        LATCbits.LATC2 = 1;
+
+        for(unsigned int i = 0; i < 500; i++)
+        {
+            for(unsigned int j = 0; j < 200; j++);
+        }
+    }
+}

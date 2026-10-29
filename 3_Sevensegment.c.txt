@@ -1,0 +1,65 @@
+#include <xc.h>
+
+#define _XTAL_FREQ 8000000
+
+#pragma config FOSC = HS
+#pragma config WDT = OFF
+#pragma config LVP = OFF
+#pragma config PBADEN = OFF
+
+unsigned char seg[] = {
+    0x3F,   // 0
+    0x06,   // 1
+    0x5B,   // 2
+    0x4F,   // 3
+    0x66,   // 4
+    0x6D,   // 5
+    0x7D,   // 6
+    0x07,   // 7
+    0x7F,   // 8
+    0x6F    // 9
+};
+
+void display(unsigned char tens, unsigned char units)
+{
+    // First digit
+    PORTA = 0x02;       // RA0 ON, RA1 OFF for CC
+    PORTB = seg[tens];
+    __delay_ms(2);
+
+    // Second digit
+    PORTA = 0x01;       // RA1 ON, RA0 OFF for CC
+    PORTB = seg[units];
+    __delay_ms(2);
+
+    PORTA = 0x03;       // Both OFF
+}
+
+void main()
+{
+    ADCON1 = 0x0F;
+
+    TRISA = 0x00;
+    TRISB = 0x00;
+
+    PORTA = 0x03;
+    PORTB = 0x00;
+
+    unsigned char i, j;
+    unsigned int k;
+
+    while(1)
+    {
+        for(i = 0; i <= 9; i++)
+        {
+            for(j = 0; j <= 9; j++)
+            {
+                // Keep each number visible for ~100 ms
+                for(k = 0; k < 25; k++)
+                {
+                    display(i, j);
+                }
+            }
+        }
+    }
+}

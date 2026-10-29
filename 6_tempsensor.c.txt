@@ -1,0 +1,64 @@
+#include <pic18f4550.h>
+
+#define LCD_RS      LATEbits.LE0
+#define LCD_EN      LATEbits.LE1
+#define LCDPORT     LATD
+
+void delay(unsigned int time)
+{
+    unsigned int i, j;
+    for(i = 0; i < time; i++)
+        for(j = 0; j < 100; j++);
+}
+
+void LCD_Command(unsigned char command)
+{
+    LCD_RS = 0;
+    LCDPORT = command;
+    LCD_EN = 1;
+    delay(10);
+    LCD_EN = 0;
+    delay(10);
+}
+
+void LCD_Data(unsigned char data)
+{
+    LCD_RS = 1;
+    LCDPORT = data;
+    LCD_EN = 1;
+    delay(10);
+    LCD_EN = 0;
+    delay(10);
+}
+
+void LCD_String(const char *s)
+{
+    while(*s)
+        LCD_Data(*s++);
+}
+
+void main(void)
+{
+    TRISD = 0x00;
+    TRISEbits.RE0 = 0;
+    TRISEbits.RE1 = 0;
+
+    LCD_RS = 0;
+    LCD_EN = 0;
+
+    delay(200);
+
+    LCD_Command(0x38);
+    LCD_Command(0x0C);
+    LCD_Command(0x06);
+    LCD_Command(0x01);
+    delay(20);
+
+    LCD_Command(0x80);
+    LCD_String("LCD TEST");
+
+    LCD_Command(0xC0);
+    LCD_String("PIC18F4550");
+
+    while(1);
+}
