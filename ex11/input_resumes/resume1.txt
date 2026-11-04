@@ -1,0 +1,4 @@
+Name: Prachi Patil
+Email: prachi@gmail.com
+Skills: Java, Python, SQL, HTML, CSS
+Education: B.Tech Information Technology
